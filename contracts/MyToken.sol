@@ -7,7 +7,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 contract MyToken is ERC721, Pausable, Ownable, ERC721Burnable {
-    constructor() ERC721("MyToken", "MTK") {}
+    constructor() ERC721("DecupleNFT", "DCPN") {}
+
+    address public proxy =0x00;
+
+    function setProxy(address adr) public onlyOwner {
+        proxy = adr
+    }
 
     function pause() public onlyOwner {
         _pause();
@@ -17,7 +23,8 @@ contract MyToken is ERC721, Pausable, Ownable, ERC721Burnable {
         _unpause();
     }
 
-    function safeMint(address to, uint256 tokenId) public onlyOwner {
+    function safeMint(address to, uint256 tokenId) public {
+        require(msg.sender == proxy,"Mint is allowed only by proxy")
         _safeMint(to, tokenId);
     }
 
